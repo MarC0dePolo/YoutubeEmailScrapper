@@ -40,19 +40,20 @@ class Crawler:
         
         self.emails = self.saveEmailRead()
 
+    #Read list of Emails that should not be saved
     def saveBlacklistRead(self):
         with self.lock:
             with open(self.pathToBlacklist, "r") as file:
                 self.blacklist = file.read().strip().split("\n")
             
             return self.blacklist
-                
+
     def saveEmailRead(self):
         with self.lock:
             with open(self.pathToEmails , "r") as file:
                 self.emails = file.read().strip().split("\n")
             return self.emails
-        
+    
     def saveEmailWrite(self, email):
         with self.lock:
             with open(self.pathToEmails, "a") as file:
@@ -107,7 +108,8 @@ class Crawler:
         with self.lock:
             with open("data/output.txt", "a") as file:
                 file.write(f"\nprocess: {self.process}\nINIT COMPLETE!\n")
-        
+
+    ### Filter Videos by time ###
     def thisDay(self):
         button = self.driver.find_element(By.XPATH, self.youtube_filter_group+'/ytd-search-filter-renderer[2]/a')
         link = button.get_attribute("href")
@@ -127,7 +129,8 @@ class Crawler:
         button = self.driver.find_element(By.XPATH, self.youtube_filter_group+'/ytd-search-filter-renderer[5]/a')
         link = button.get_attribute("href")
         return link
-    
+
+    #Scroll to Bottom
     def loadFullPage(self):
         
         previousPos = None
@@ -142,7 +145,7 @@ class Crawler:
                 break
         
         self.saveOutputWrite(msg="SCROLLED TO BOTTOM")
-
+    
     def getYoutubeLinks(self, query, timeFrameMethod):
         # List Videos with youtube Query
         self.driver.get(f"https://www.youtube.com/results?search_query={query}")
